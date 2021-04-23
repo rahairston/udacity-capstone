@@ -24,11 +24,5 @@
       raw: cd Udacity-Capstone && git pull
       when: udaCap.stat.exists
 
-    - name: Check permissions
-      raw: ls -l ~/Udacity-Capstone/.circleci/files
-
-    - name: Change permissions
-      raw: chmod +x ~/Udacity-Capstone/.circleci/files/*.sh
-
   roles:
     - configure-server
