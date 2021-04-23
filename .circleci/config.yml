@@ -101,10 +101,10 @@ jobs:
             export LB_DNS=$(aws cloudformation list-exports \
               --query "Exports[?Name=='WorkflowID'].Value" \
               --no-paginate --output text)
-            echo $LB_DNS > ../../LB_DNS.txt
+            echo $LB_DNS > /root/project/LB_DNS.txt
             cat LB_DNS.txt
       - persist_to_workspace:
-          root: .
+          root: /root/project
           paths:
             - "LB_DNS.txt"
       - destroy-environment
