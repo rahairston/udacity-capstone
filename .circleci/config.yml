@@ -104,7 +104,6 @@ jobs:
             export EC2_IP=$(aws cloudformation list-exports \
               --query "Exports[?Name=='EC2-IP'].Value" \
               --no-paginate --output text)
-            echo $LB_DNS $EC2_IP
             echo $LB_DNS > /root/project/LB_DNS.txt
             echo $EC2_IP > /root/project/EC2_IP.txt
             cat /root/project/LB_DNS.txt
@@ -129,7 +128,7 @@ jobs:
             apk add --update tar gzip ansible curl
             pip install awscli
       - add_ssh_keys: 
-          fingerprints: ["07:d3:6f:b8:7d:8b:db:91:ff:d1:8c:e8:89:a3:48:5a:13:16:7e:e9"]
+          fingerprints: ["bf:00:85:a1:e2:5f:6f:c6:04:95:04:b9:47:a2:22:e8"]
       - attach_workspace:
           at: ~/
       - run: 
