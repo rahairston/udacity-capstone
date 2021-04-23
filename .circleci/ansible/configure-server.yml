@@ -9,7 +9,12 @@
     - ansible_host_key_checking: false
     - ansible_stdout_callback: yaml
  
-  pre_tasks:  
+  pre_tasks: 
+
+    - name: "install python for Ansible."
+      become: true
+      raw: test -a /usr/bin/python3 || (apt -y update && apt install -y python3)
+
     - name: Stat path
       stat:
         path: ~/Udacity-Capstone
