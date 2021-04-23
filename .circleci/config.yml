@@ -47,8 +47,6 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "src/requirements.txt" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
       - run:
           name: run unit tests
           command: | 
@@ -121,7 +119,7 @@ workflows:
     jobs:
       - BuildAndLint
       - RunUnitTests:
-        requires: [BuildAndLint]
+          requires: [BuildAndLint]
       - BuildAndPushDocker:
           requires: [BuildAndLint, RunUnitTests]
           filters:
