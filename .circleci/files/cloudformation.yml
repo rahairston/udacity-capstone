@@ -24,7 +24,7 @@ Resources:
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: udacity 
-      ImageId: ami-05d72852800cbf29e
+      ImageId: ami-0742b4e673072066f
       Tags:
         - Key: Name
           Value: backend_python
@@ -33,9 +33,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow http to our load balancer
-      VpcId:
-        Fn::ImportValue:
-          !Sub "${EnvironmentName}-VPCID"
+      VpcId: vpc-415efd3c
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: 80
@@ -43,16 +41,20 @@ Resources:
         CidrIp: 0.0.0.0/0
       SecurityGroupEgress:
       - IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
+        FromPort: 8080
+        ToPort: 8080
         CidrIp: 0.0.0.0/0
 
   WebAppLB: #from https://github.com/udacity/nd9991-c2-Infrastructure-as-Code-v1/tree/master/supporting_material
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Subnets:
-      - Fn::ImportValue: !Sub "${EnvironmentName}-PUB1-SN"
-      - Fn::ImportValue: !Sub "${EnvironmentName}-PUB2-SN"
+      - subnet-931a529d
+      - subnet-c92d0b84
+      - subnet-4f1ac07e
+      - subnet-4f21b629
+      - subnet-e7ac31c6
+      - subnet-e5ff6cba
       SecurityGroups:
       - Ref: LBSecGroup
 
@@ -65,7 +67,7 @@ Resources:
           Ref: WebAppTargetGroup
       LoadBalancerArn:
         Ref: WebAppLB
-      Port: '80'
+      Port: '8080'
       Protocol: HTTP
   ALBListenerRule: #from https://github.com/udacity/nd9991-c2-Infrastructure-as-Code-v1/tree/master/supporting_material
       Type: AWS::ElasticLoadBalancingV2::ListenerRule
@@ -87,8 +89,8 @@ Resources:
       HealthCheckTimeoutSeconds: 8
       HealthyThresholdCount: 2
       Targets:
-        - Id: !GetAtt [ EC2Instance, Arn ]
-      Port: 80
+        - Id: !Ref EC2Instance
+      Port: 8080
       Protocol: HTTP
       UnhealthyThresholdCount: 5
       VpcId: vpc-415efd3c
@@ -97,5 +99,5 @@ Outputs:
     Description: The hostname of the create loadbalancer
     Value: !Sub http://${WebAppLB.DNSName}
     Export:
-      Name: !Sub ${EnvironmentName}-LB-DNS
+      Name: LB-DNS
     

@@ -85,6 +85,15 @@ jobs:
           command: |
             cd .circleci/files
             aws cloudformation deploy --stack-name capstone --template-file=cloudformation.yml --region=us-east-1
+            export LB_DNS=$(aws cloudformation list-exports \
+              --query "Exports[?Name=='WorkflowID'].Value" \
+              --no-paginate --output text)
+            echo $LB_DNS > LB_DNS.txt
+            cat LB_DNS.txt
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "LB_DNS.txt"
 
   ConfigureInfrastructure:
     docker:
@@ -92,14 +101,18 @@ jobs:
     environment:
         ANSIBLE_HOST_KEY_CHECKING: "false"
     steps:
-      - checkout # Checkout so we know what to scale to!
+      - checkout
       - add_ssh_keys: 
-          fingerprints: ["0c:88:ce:b8:35:93:62:74:b6:43:82:ab:ef:53:21:f5"] 
+          fingerprints: ["07:d3:6f:b8:7d:8b:db:91:ff:d1:8c:e8:89:a3:48:5a:13:16:7e:e9"]
+      - attach_workspace:
+          at: ~/
       - run: 
           name: Generate inventory
           command: |
+            export LB_DNS=$(cat ~/LB_DNS.txt)
             echo "[web]" > /tmp/inventory.txt
-            echo "#TODO -> find DNS" >> /tmp/inventory.txt
+            echo $LB_DNS >> /tmp/inventory.txt
+            cat /tmp/inventory.txt
       - run:
           name: Update Infrastructure
           command: |
@@ -109,10 +122,13 @@ jobs:
     docker:
       - image: curlimages/curl:latest
     steps:
+      - attach_workspace:
+          at: ~/
       - run:
           name: Smoke Test
           command: |
-            if $(curl -s #TODO AND FIND DNS | grep -q Hello World); then return 0; else return 1; fi
+            export LB_DNS=$(cat ~/LB_DNS.txt)
+            if $(curl -s $LB_DNS AND FIND DNS | grep -q Hello World); then return 0; else return 1; fi
 
 workflows:
   default:
