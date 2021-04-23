@@ -160,7 +160,6 @@ jobs:
           command: |
             export LB_DNS=$(cat ~/LB_DNS.txt)
             if $(curl -s $LB_DNS | grep -q "Hello World"); then return 0; else return 1; fi
-      - destroy-environment
 
 workflows:
   default:
