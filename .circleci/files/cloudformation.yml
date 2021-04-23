@@ -99,5 +99,10 @@ Outputs:
     Description: The hostname of the create loadbalancer
     Value: !Sub http://${WebAppLB.DNSName}
     Export:
-      Name: LB-DNS
+      Name: LB_DNS
+  EC2PublicIP:
+    Description: The IP of our EC2 instand
+    Value: !Sub ${EC2Instance.PublicIp}
+    Export:
+      Name: EC2_IP
     

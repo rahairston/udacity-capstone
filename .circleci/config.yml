@@ -101,12 +101,19 @@ jobs:
             export LB_DNS=$(aws cloudformation list-exports \
               --query "Exports[?Name=='LB_DNS'].Value" \
               --no-paginate --output text)
+            export EC2_IP=$(aws cloudformation list-exports \
+              --query "Exports[?Name=='EC2_IP'].Value" \
+              --no-paginate --output text)
+            echo $LB_DNS $EC2_IP
             echo $LB_DNS > /root/project/LB_DNS.txt
+            echo $EC2_IP > /root/project/EC2_IP.txt
             cat /root/project/LB_DNS.txt
+            cat /root/project/EC2_IP.txt
       - persist_to_workspace:
           root: /root/project
           paths:
             - "LB_DNS.txt"
+            - "EC2_IP.txt"
       - destroy-environment
 
   ConfigureInfrastructure:
@@ -128,9 +135,9 @@ jobs:
       - run: 
           name: Generate inventory
           command: |
-            export LB_DNS=$(cat ~/LB_DNS.txt)
+            export EC2_IP=$(cat ~/EC2_IP.txt)
             echo "[web]" > /tmp/inventory.txt
-            echo $LB_DNS >> /tmp/inventory.txt
+            echo "$EC2_IP" >> /tmp/inventory.txt
             cat /tmp/inventory.txt
       - run:
           name: Update Infrastructure
@@ -140,16 +147,20 @@ jobs:
             
   SmokeTest:
     docker:
-      - image: curlimages/curl:latest
+      - image: python:3.7-alpine3.11
     steps:
-      - run: yum -y install tar gzip
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update tar gzip ansible curl
+            pip install awscli
       - attach_workspace:
           at: ~/
       - run:
           name: Smoke Test
           command: |
             export LB_DNS=$(cat ~/LB_DNS.txt)
-            if $(curl -s $LB_DNS AND FIND DNS | grep -q Hello World); then return 0; else return 1; fi
+            if $(curl -s $LB_DNS | grep -q Hello World); then return 0; else return 1; fi
       - destroy-environment
 
 workflows:
