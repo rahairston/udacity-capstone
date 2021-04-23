@@ -146,12 +146,12 @@ jobs:
             
   SmokeTest:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: alpine:latest
     steps:
       - run:
           name: Install dependencies
           command: |
-            apk add --update tar gzip ansible curl
+            apk add --update curl python3 py3-pip
             pip install awscli
       - attach_workspace:
           at: ~/
