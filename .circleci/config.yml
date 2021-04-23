@@ -64,7 +64,6 @@ jobs:
       - run: 
           name: Build  Image
           command: |
-            cd .circleci/files
             docker build -t capstone_server .
       - run:
           name: Login To Docker
