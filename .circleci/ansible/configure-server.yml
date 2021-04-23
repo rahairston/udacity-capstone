@@ -11,17 +11,21 @@
  
   pre_tasks: 
 
+    - name: "wait 60 seconds for target connection to become reachable/usable."
+      wait_for_connection:
+        timeout: 60
+
     - name: Stat path
       stat:
-        path: ~/Udacity-Capstone
+        path: ~/udacity-capstone
       register: udaCap
 
-    - name: Git clonse
+    - name: Git clone
       raw: git clone https://github.com/rahairston/udacity-capstone.git
       when: not udaCap.stat.exists
 
     - name: Git checkout
-      raw: cd Udacity-Capstone && git pull
+      raw: cd udacity-capstone && git pull
       when: udaCap.stat.exists
 
   roles:

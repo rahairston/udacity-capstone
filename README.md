@@ -1,6 +1,6 @@
 # Udacity Devops Capstone
 
-[![CircleCI]()]() #TODO
+[![CircleCI](https://circleci.com/gh/rahairston/udacity-capstone.svg?style=svg)](https://circleci.com/gh/rahairston/udacity-capstone)
 
 This is the capstone project for the Udacity AWS Cloud Devops Engineer class.
 
