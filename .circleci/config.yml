@@ -124,7 +124,7 @@ workflows:
       - CreateInfrastructure:
           requires: [BuildAndPushDocker]
       - ConfigureInfrastructure:
-          requires: [GenerateInfrastructure]
+          requires: [CreateInfrastructure]
       - SmokeTest:
           requires: [ConfigureInfrastructure]
 
