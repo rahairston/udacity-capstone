@@ -20,11 +20,11 @@ Resources:
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      InstanceType: t2.micro
+      InstanceType: t3.medium # smallest instance that can support minikube
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: udacity 
-      ImageId: ami-0742b4e673072066f
+      ImageId: ami-013f17f36f8b1fefb
       Tags:
         - Key: Name
           Value: backend_python

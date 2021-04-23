@@ -2,7 +2,7 @@
 
 - name: "Server Configuration" 
   hosts: web
-  user: ec2-user
+  user: ubuntu
   gather_facts: false
   vars:
     - ansible_python_interpreter: /usr/bin/python3
@@ -10,10 +10,6 @@
     - ansible_stdout_callback: yaml
  
   pre_tasks: 
-
-    - name: "install python for Ansible."
-      become: true
-      raw: test -a /usr/bin/python3 || (apt -y update && apt install -y python3)
 
     - name: Stat path
       stat:
