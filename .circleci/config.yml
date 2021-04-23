@@ -102,7 +102,7 @@ jobs:
               --query "Exports[?Name=='WorkflowID'].Value" \
               --no-paginate --output text)
             echo $LB_DNS > /root/project/LB_DNS.txt
-            cat LB_DNS.txt
+            cat /root/project/LB_DNS.txt
       - persist_to_workspace:
           root: /root/project
           paths:
