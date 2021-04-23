@@ -11,4 +11,4 @@
 - name: "Roll Update"
   environment:
     IMAGETAG: "{{ IMAGETAG }}"
-  raw: sh ./udacity-capstone/.circleci/files/roll_update.sh
+  raw: sh ./udacity-capstone/.circleci/files/update.sh
