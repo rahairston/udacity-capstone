@@ -111,12 +111,16 @@ jobs:
 
   ConfigureInfrastructure:
     docker:
-      - image: mullnerz/ansible-playbook:latest
+      - image: python:3.7-alpine3.11
     environment:
         ANSIBLE_HOST_KEY_CHECKING: "false"
     steps:
       - checkout
-      - run: yum -y install tar gzip
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update tar gzip ansible curl
+            pip install awscli
       - add_ssh_keys: 
           fingerprints: ["07:d3:6f:b8:7d:8b:db:91:ff:d1:8c:e8:89:a3:48:5a:13:16:7e:e9"]
       - attach_workspace:
