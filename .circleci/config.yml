@@ -99,10 +99,10 @@ jobs:
             cd .circleci/files
             aws cloudformation deploy --stack-name capstone-${CIRCLE_WORKFLOW_ID:0:7} --template-file=cloudformation.yml --region=us-east-1
             export LB_DNS=$(aws cloudformation list-exports \
-              --query "Exports[?Name=='LB_DNS'].Value" \
+              --query "Exports[?Name=='LB-DNS'].Value" \
               --no-paginate --output text)
             export EC2_IP=$(aws cloudformation list-exports \
-              --query "Exports[?Name=='EC2_IP'].Value" \
+              --query "Exports[?Name=='EC2-IP'].Value" \
               --no-paginate --output text)
             echo $LB_DNS $EC2_IP
             echo $LB_DNS > /root/project/LB_DNS.txt
