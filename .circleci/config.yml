@@ -92,11 +92,7 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run:
-        name: Install dependencies
-        command: |
-          yum update
-          yum install -y tar gzip
+      - run: yum -y install tar gzip
       - run:
           name: Create Infrastructure
           command: |
@@ -120,11 +116,7 @@ jobs:
         ANSIBLE_HOST_KEY_CHECKING: "false"
     steps:
       - checkout
-      - run:
-        name: Install dependencies
-        command: |
-          yum update
-          yum install -y tar gzip
+      - run: yum -y install tar gzip
       - add_ssh_keys: 
           fingerprints: ["07:d3:6f:b8:7d:8b:db:91:ff:d1:8c:e8:89:a3:48:5a:13:16:7e:e9"]
       - attach_workspace:
@@ -146,11 +138,7 @@ jobs:
     docker:
       - image: curlimages/curl:latest
     steps:
-      - run:
-        name: Install dependencies
-        command: |
-          yum update
-          yum install -y tar gzip
+      - run: yum -y install tar gzip
       - attach_workspace:
           at: ~/
       - run:
