@@ -6,7 +6,7 @@ WORKDIR /app
 
 ## Step 2:
 # Copy source code to working directory
-COPY ./src/ /app
+COPY . /app
 
 ## Step 3:
 # Install packages from requirements.txt
@@ -19,4 +19,4 @@ EXPOSE 8080
 
 ## Step 5:
 # Run app.py at container launch
-ENTRYPOINT ["python3", "app.py"]
+ENTRYPOINT ["python3", "src/app.py"]
