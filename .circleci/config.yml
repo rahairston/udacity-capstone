@@ -99,7 +99,7 @@ jobs:
             cd .circleci/files
             aws cloudformation deploy --stack-name capstone-${CIRCLE_WORKFLOW_ID:0:7} --template-file=cloudformation.yml --region=us-east-1
             export LB_DNS=$(aws cloudformation list-exports \
-              --query "Exports[?Name=='WorkflowID'].Value" \
+              --query "Exports[?Name=='LB_DNS'].Value" \
               --no-paginate --output text)
             echo $LB_DNS > /root/project/LB_DNS.txt
             cat /root/project/LB_DNS.txt
