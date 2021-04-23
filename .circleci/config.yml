@@ -84,7 +84,7 @@ jobs:
           name: Create Infrastructure
           command: |
             cd .circleci/files
-            aws cloudformation deploy --stack-name capstone --template-file=cloudformation.yml
+            aws cloudformation deploy --stack-name capstone --template-file=cloudformation.yml --region=us-east-1
 
   ConfigureInfrastructure:
     docker:
