@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: capstone-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: capstone-server
+  template:
+    metadata:
+      labels:
+        app: capstone-server
+    spec:
+      containers:
+      - name: capstone-server
+        image: rahairston/udacity:IMAGETAG
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always

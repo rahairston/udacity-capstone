@@ -1,0 +1,27 @@
+---
+
+- name: "Server Configuration" 
+  hosts: web
+  user: ubuntu
+  gather_facts: false
+  vars:
+    - ansible_python_interpreter: /usr/bin/python3
+    - ansible_host_key_checking: false
+    - ansible_stdout_callback: yaml
+ 
+  pre_tasks:  
+    - name: Stat path
+      stat:
+        path: ~/Udacity-Capstone
+      register: udaCap
+
+    - name: Git clonse
+      raw: git clone https://github.com/rahairston/udacity-capstone.git
+      when: not udaCap.stat.exists
+
+    - name: Git checkout
+      raw: cd Udacity-Capstone && git pull
+      when: udaCap.stat.exists
+
+  roles:
+    - configure-server

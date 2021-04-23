@@ -1,0 +1,131 @@
+version: 2.1
+
+jobs:
+  BuildAndLint:
+    docker:
+    # Use the same Docker base as the project
+      - image: python:3.7.3-stretch
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            make install
+            # Install hadolint
+            wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 &&\
+            chmod +x /bin/hadolint
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+
+      # run lint!
+      - run:
+          name: run lint
+          command: |
+            . venv/bin/activate
+            make lint
+
+  RunUnitTests:
+    docker: 
+      - image: python:3.7.3-stretch
+    steps:
+      - checkout
+      - run:
+          name: run unit tests
+          command: | 
+            cd src
+            python3 test_suite.py
+
+
+  BuildAndPushDocker:
+    docker:
+      - image: docker:latest
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: 
+          name: Build  Image
+          command: |
+            cd .circleci/files
+            docker build -t capstone_server .
+      - run:
+          name: Login To Docker
+          command: | 
+            docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
+      - run:
+          name: Push Image
+          command: |
+            docker tag capstone_server ${DOCKERHUB_USERNAME}/udacity:${CIRCLE_WORKFLOW_ID:0:7}
+            docker push ${DOCKERHUB_USERNAME}/udacity:${CIRCLE_WORKFLOW_ID:0:7}            
+
+  CreateInfrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Create Infrastructure
+          command: |
+            cd .circleci/files
+            aws cloudformation deploy --stack-name capstone --template-file=cloudformation.yml
+
+  ConfigureInfrastructure:
+    docker:
+      - image: mullnerz/ansible-playbook:latest
+    environment:
+        ANSIBLE_HOST_KEY_CHECKING: "false"
+    steps:
+      - checkout # Checkout so we know what to scale to!
+      - add_ssh_keys: 
+          fingerprints: ["0c:88:ce:b8:35:93:62:74:b6:43:82:ab:ef:53:21:f5"] 
+      - run: 
+          name: Generate inventory
+          command: |
+            echo "[web]" > /tmp/inventory.txt
+            echo "#TODO -> find DNS" >> /tmp/inventory.txt
+      - run:
+          name: Update Infrastructure
+          command: |
+            ansible-playbook -vvv -i /tmp/inventory.txt .circleci/ansible/configure-server.yml --extra-vars "IMAGETAG=${CIRCLE_WORKFLOW_ID:0:7}"          
+            
+  SmokeTest:
+    docker:
+      - image: curlimages/curl:latest
+    steps:
+      - run:
+          name: Smoke Test
+          command: |
+            if $(curl -s #TODO AND FIND DNS | grep -q Hello World); then return 0; else return 1; fi
+
+workflows:
+  default:
+    jobs:
+      - BuildAndLint
+      - RunUnitTests
+      - BuildAndPushDocker:
+          requires: [RunLintTests, RunUnitTests]
+          filters:
+            branches:
+              only: [main]
+      - CreateInfrastructure:
+          requires: [BuildAndPushDocker]
+      - ConfigureInfrastructure:
+          requires: [GenerateInfrastructure]
+      - SmokeTest:
+          requires: [ConfigureInfrastructure]
+
+      

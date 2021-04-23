@@ -1,0 +1,11 @@
+--- 
+- name: "Setup server"
+  raw: sh ./Udacity-Capstone/.circleci/files/setup.sh
+
+- name: "Replacing image name"
+  raw: cat ~/Udacity-Capstone/.circleci/files/deployment.yml | sed -s "s|IMAGETAG|{{ IMAGETAG }}|g" > /tmp/modified_deployment.yml
+
+- name: "Roll Update"
+  environment:
+    IMAGETAG: "{{ IMAGETAG }}"
+  raw: sh ./Udacity-Capstone/.circleci/files/roll_update.sh
