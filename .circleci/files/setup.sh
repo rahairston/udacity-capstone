@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 # Install Docker
 if $(which docker | grep -q /usr/bin/docker)
 then

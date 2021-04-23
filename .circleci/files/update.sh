@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 # Note: This won't do anything if we are already deployed
 echo "Initializing Deployment and Service"
 minikube kubectl -- apply -f ~/Udacity-Capstone/.circleci/files/service.yml
