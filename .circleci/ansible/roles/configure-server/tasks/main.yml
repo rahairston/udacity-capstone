@@ -1,6 +1,9 @@
 --- 
-- name: "Setup server"
-  raw: sh ./udacity-capstone/.circleci/files/setup.sh
+- name: "Setup docker"
+  raw: sh ./udacity-capstone/.circleci/files/setup-docker.sh
+
+- name: "Setup minikube"
+  raw: sh ./udacity-capstone/.circleci/files/setup-minikube.sh
 
 - name: "Replacing image name"
   raw: cat ~/udacity-capstone/.circleci/files/deployment.yml | sed -s "s|IMAGETAG|{{ IMAGETAG }}|g" > /tmp/modified_deployment.yml
