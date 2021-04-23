@@ -117,10 +117,10 @@ workflows:
       - BuildAndLint
       - RunUnitTests
       - BuildAndPushDocker:
-          requires: [RunLintTests, RunUnitTests]
+          requires: [BuildAndLint, RunUnitTests]
           filters:
             branches:
-              only: [main]
+              only: [master]
       - CreateInfrastructure:
           requires: [BuildAndPushDocker]
       - ConfigureInfrastructure:
