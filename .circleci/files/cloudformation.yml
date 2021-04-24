@@ -1,12 +1,12 @@
 Description: >
-  Capstone server available on port 80
+  Capstone server available on port 8080
 
 Resources:
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: backend-group
-      GroupDescription: Allow port 22 and port 80
+      GroupDescription: Allow port 22 and port 8080
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
@@ -36,7 +36,7 @@ Resources:
       VpcId: vpc-415efd3c
       SecurityGroupIngress:
       - IpProtocol: tcp
-        FromPort: 80
+        FromPort: 8080
         ToPort: 8080
         CidrIp: 0.0.0.0/0
       SecurityGroupEgress:

@@ -14,3 +14,5 @@ minikube start
 else 
 echo Minikube is running!
 fi
+
+minikube tunnel > /dev/null &

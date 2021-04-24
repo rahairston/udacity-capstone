@@ -159,7 +159,7 @@ jobs:
           name: Smoke Test
           command: |
             export LB_DNS=$(cat ~/LB_DNS.txt)
-            if $(curl -s $LB_DNS | grep -q "Hello World"); then return 0; else return 1; fi
+            if $(curl -s $LB_DNS:8080 | grep -q "Hello World"); then return 0; else return 1; fi
 
 workflows:
   default:
